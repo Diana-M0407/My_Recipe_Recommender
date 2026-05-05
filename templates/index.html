@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MealDash</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">MealDash</div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-text">
+                <div class="hero-chip">Budget-friendly meals</div>
+                <h1>Find the best recipes with what you already have.</h1>
+                <p>
+                    Search by budget, pantry ingredients, and meal preference to get fast recipe matches.
+                </p>
+            </div>
+        </section>
+
+        <section class="search-panel">
+            {% if error %}
+                <div class="error-box">{{ error }}</div>
+            {% endif %}
+
+            <form action="/results" method="POST" class="search-form" id="recipeForm">
+                <div class="field-group">
+                    <label for="budget">Your budget</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">$</span>
+                        <input
+                            type="number"
+                            id="budget"
+                            name="budget"
+                            step="0.01"
+                            min="0.01"
+                            placeholder="Enter budget"
+                            value="{{ budget }}"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="pantry">Pantry ingredients</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🥘</span>
+                        <input
+                            type="text"
+                            id="pantry"
+                            name="pantry"
+                            placeholder="chicken, rice, garlic"
+                            value="{{ pantry }}"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="cuisine">Cuisine</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🌍</span>
+                        <select id="cuisine" name="cuisine" required>
+                            <option value="any" {% if cuisine == "any" %}selected{% endif %}>Any</option>
+                            <option value="asian" {% if cuisine == "asian" %}selected{% endif %}>Asian</option>
+                            <option value="italian" {% if cuisine == "italian" %}selected{% endif %}>Italian</option>
+                            <option value="mexican" {% if cuisine == "mexican" %}selected{% endif %}>Mexican</option>
+                            <option value="american" {% if cuisine == "american" %}selected{% endif %}>American</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="diet">Diet</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🥗</span>
+                        <select id="diet" name="diet" required>
+                            <option value="none" {% if diet == "none" %}selected{% endif %}>Any</option>
+                            <option value="vegetarian" {% if diet == "vegetarian" %}selected{% endif %}>Vegetarian</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="primary-btn">Get Recipes</button>
+            </form>
+        </section>
+    </div>
+</body>
+</html>

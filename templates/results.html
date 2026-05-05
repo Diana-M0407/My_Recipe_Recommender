@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MealDash Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">MealDash</div>
+            <a class="top-link" href="/">New Search</a>
+        </header>
+
+        <section class="results-hero">
+            <h1>Top recipe matches</h1>
+            <p>Here are your best results based on budget, pantry items, and preference.</p>
+
+            <div class="summary-row">
+                <div class="summary-pill">Budget: ${{ budget }}</div>
+                <div class="summary-pill">Cuisine: {{ cuisine|capitalize }}</div>
+                <div class="summary-pill">Diet: {{ "Vegetarian" if diet == "vegetarian" else "Any" }}</div>
+                <div class="summary-pill">Pantry: {{ pantry }}</div>
+            </div>
+        </section>
+
+        {% if recipes %}
+            <section class="cards-grid">
+                {% for recipe in recipes %}
+                    <article class="recipe-card {% if loop.first %}best-card{% endif %}">
+                        <div class="recipe-image recipe-image-{{ loop.index }}">
+                            <span class="image-badge">{{ recipe.cuisine|capitalize }}</span>
+                            {% if loop.first %}
+                                <span class="best-badge">Best Match</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="recipe-content">
+                            <div class="recipe-header">
+                                <h2>{{ recipe.recipe }}</h2>
+                                <div class="price-tag">${{ "%.2f"|format(recipe.price_estimate) }}</div>
+                            </div>
+
+                            {% if recipe.description %}
+                                <p class="recipe-description">{{ recipe.description }}</p>
+                            {% endif %}
+
+                            <div class="meta-row">
+                                <span class="meta-pill">{{ recipe.cook_time|capitalize }}</span>
+                                <span class="meta-pill">{{ recipe.ingredients_owned }} pantry {{ "match" if recipe.ingredients_owned == 1 else "matches" }}</span>
+                                <span class="meta-pill match-score">{{ (recipe.bn_score * 100)|round|int }}% match</span>
+                            </div>
+
+                            <p class="section-label">Full ingredients</p>
+                            <p class="recipe-text">{{ recipe.ingredients | join(', ') }}</p>
+
+                            <p class="section-label">You still need to buy</p>
+                            <p class="recipe-text">
+                                {% if recipe.ingredients_needed %}
+                                    {{ recipe.ingredients_needed | join(', ') }}
+                                {% else %}
+                                    Nothing — you already have everything.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </article>
+                {% endfor %}
+            </section>
+        {% else %}
+            <div class="empty-box">
+                <h2>No recipes found</h2>
+                <p>Try increasing your budget or changing your cuisine preference.</p>
+            </div>
+        {% endif %}
+
+        <a class="back-link" href="/">← Back to search</a>
+    </div>
+</body>
+</html>
