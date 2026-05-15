@@ -2,6 +2,8 @@ from flask import Flask, render_template, request
 
 from recipe_recommender import RECIPES, build_network, recommend_recipes
 
+from llm_module import explain_recommendation
+
 model = build_network()
 
 app = Flask(__name__)
@@ -133,7 +135,18 @@ def results():
             r["description"] = RECIPE_DESCRIPTIONS.get(name, "")
             r["instructions"] = RECIPE_INSTRUCTIONS.get(name, "")
             r["ingredients"] = rec.get("ingredients", [])
-
+            r["explanation"] = explain_recommendation(
+                recipe_name=name,
+                bn_score=r["bn_score"],
+                pantry_match=r["pantry_match"],
+                ingredients_owned=r["ingredients_owned"],
+                ingredients_needed=r["ingredients_needed"],
+                price_estimate=r["price_estimate"],
+                user_budget=budget,
+                cuisine=r["cuisine"],
+                cook_time=r["cook_time"],
+            )
+            
     except Exception as e:
         error = f"Recommendation failed: {str(e)}"
         return render_template(

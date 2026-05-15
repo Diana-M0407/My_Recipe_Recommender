@@ -49,6 +49,10 @@
                             {% if recipe.description %}
                                 <p class="recipe-description">{{ recipe.description }}</p>
                             {% endif %}
+                            
+                            {% if recipe.explanation %}
+                                <p class="recipe-explanation">💡 {{ recipe.explanation }}</p>
+                            {% endif %}
 
                             <div class="meta-row">
                                 <span class="meta-pill cook-{{ recipe.cook_time }}">⏱ {{ recipe.cook_time|capitalize }}</span>
